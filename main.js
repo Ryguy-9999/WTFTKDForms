@@ -232,6 +232,29 @@ const formData = [
             { moveX: 0, moveY: 1, stance: 'highStance', multiMove: 3, kihup: true },
         ]
     }, {
+        name: 'Taegeuk Sa Jang*',
+        belt: '#00ee00',
+        beltStripe: '#4444ff',
+        pattern: [
+            { moveX: -1, moveY: 0, stance: 'sideStance' },
+            { moveX: -1, moveY: 0, stance: 'lowStance' },
+            { moveX: 1, moveY: 0, stance: 'sideStance' },
+            { moveX: 1, moveY: 0, stance: 'lowStance' },
+            { moveX: 0, moveY: -1, stance: 'lowStance' },
+            { moveX: 0, moveY: -1, stance: 'lowStance', multiMove: 2 },
+            { moveX: 0, moveY: -2, stance: 'sideStance', multiMove: 3 },
+            { moveX: 1, moveY: 0, stance: 'sideStance' },
+            { moveX: 0.2, moveY: 0, stance: 'sideStance', multiMove: 2 },
+            { moveX: -1, moveY: 0, stance: 'sideStance' },
+            { moveX: -0.2, moveY: 0, stance: 'sideStance', multiMove: 2 },
+            { moveX: 0, moveY: 1, stance: 'lowStance' },
+            { moveX: 0, moveY: 1, stance: 'lowStance', multiMove: 2 },
+            { moveX: 1, moveY: 0, stance: 'highStance', multiMove: 2 },
+            { moveX: -1, moveY: 0, stance: 'highStance', multiMove: 2 },
+            { moveX: 0, moveY: 1, stance: 'lowStance', multiMove: 3 },
+            { moveX: 0, moveY: 1, stance: 'lowStance', multiMove: 3, kihup: true },
+        ]
+    }, {
         name: 'Keumgang',
         belt: '#000000',
         dan: 2,

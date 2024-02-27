@@ -1,6 +1,6 @@
 function canvas_arrow(context, fromx, fromy, tox, toy) {
     context.beginPath();
-    var headlen = Math.sqrt(Math.pow(tox - fromx, 2) + Math.pow(toy - fromy, 2)) / 10; // length of head in pixels
+    var headlen =  15; // length of head in pixels
     var dx = tox - fromx;
     var dy = toy - fromy;
     var angle = Math.atan2(dy, dx);
@@ -54,6 +54,7 @@ function draw_form(form) {
             ctx.fill();
         }
 
+        ctx.setLineDash(movement.backwards ? [10, 5] : []);        
         ctx.strokeStyle = (stanceColorData.hasOwnProperty(movement.stance) ? stanceColorData[movement.stance] : stanceColorData.default).replace('$alpha', ''+colorAlpha);
         canvas_arrow(ctx, currentPoint.x, currentPoint.y, newPoint.x, newPoint.y);
 
@@ -84,6 +85,18 @@ const stanceData = [
         name: 'Side/Back Stance',
         koreanName: 'Dwi Kubi',
         colorCode: 'sideStance'
+    }, {
+        name: 'Horse/Sitting Stance',
+        koreanName: 'Juchum Seogi',
+        colorCode: 'horseStance'
+    }, {
+        name: 'Crane Stance',
+        koreanName: 'Hakdari* Seogi',
+        colorCode: 'craneStance'
+    }, {
+        name: 'Neutral* Stance',
+        koreanName: 'Naranhi* Seogi',
+        colorCode: 'neutralStance'
     },
 ];
 
@@ -91,6 +104,9 @@ const stanceColorData = {
     lowStance: 'rgba(255,0,0,$alpha)',
     highStance: 'rgba(0,255,0,$alpha)',
     sideStance: 'rgba(0,0,255,$alpha)',
+    horseStance: 'rgba(255,127,0,$alpha)',
+    craneStance: 'rgba(255,0,255,$alpha)',
+    neutralStance: 'rgba(127,127,255,$alpha)',
     default: 'rgba(0,0,0,$alpha)'
 }
 const formData = [
@@ -158,34 +174,95 @@ const formData = [
             { moveX: 1, moveY: 0, stance: 'highStance' },
             { moveX: -1, moveY: 0, stance: 'highStance' },
             { moveX: -1, moveY: 0, stance: 'highStance' },
-            { moveX: 0, moveY: -1, stance: 'lowStance', multiMove: 4 },
+            { moveX: 0, moveY: -1, stance: 'lowStance', multiMove: 2 },
             { moveX: -1, moveY: 0, stance: 'highStance' },
-            { moveX: -1, moveY: 0, stance: 'highStance' },
+            { moveX: -1, moveY: 0, stance: 'highStance', multiMove: 2 },
             { moveX: 1, moveY: 0, stance: 'highStance' },
-            { moveX: 1, moveY: 0, stance: 'highStance' },
+            { moveX: 1, moveY: 0, stance: 'highStance', multiMove: 2 },
             { moveX: 0, moveY: 1, stance: 'lowStance' },
             { moveX: 0, moveY: 1, stance: 'lowStance', kihup: true },
         ]
     }, {
-        name: 'Koryo',
-        belt: '#000000',
+        name: 'Taegeuk Ee Jang*',
+        belt: '#eeee00',
+        beltStripe: '#00ee00',
         pattern: [
             { moveX: -1, moveY: 0, stance: 'highStance' },
+            { moveX: -1, moveY: 0, stance: 'lowStance' },
+            { moveX: 1, moveY: 0, stance: 'highStance' },
+            { moveX: 1, moveY: 0, stance: 'lowStance' },
+            { moveX: 0, moveY: -1, stance: 'highStance' },
+            { moveX: 0, moveY: -1, stance: 'highStance' },
             { moveX: -1, moveY: 0, stance: 'highStance' },
+            { moveX: -1, moveY: 0, stance: 'lowStance', multiMove: 2 },
             { moveX: 1, moveY: 0, stance: 'highStance' },
-            { moveX: 1, moveY: 0, stance: 'highStance' },
-            { moveX: 0, moveY: -1, stance: 'lowStance' },
-            { moveX: 1, moveY: 0, stance: 'highStance' },
+            { moveX: 1, moveY: 0, stance: 'lowStance', multiMove: 2 },
+            { moveX: 0, moveY: -1, stance: 'highStance' },
+            { moveX: 0, moveY: -1, stance: 'highStance' },
             { moveX: 1, moveY: 0, stance: 'highStance' },
             { moveX: -1, moveY: 0, stance: 'highStance' },
-            { moveX: -1, moveY: 0, stance: 'highStance' },
-            { moveX: 0, moveY: -1, stance: 'lowStance' },
-            { moveX: -1, moveY: 0, stance: 'highStance' },
-            { moveX: -1, moveY: 0, stance: 'highStance' },
-            { moveX: 1, moveY: 0, stance: 'highStance' },
-            { moveX: 1, moveY: 0, stance: 'highStance' },
             { moveX: 0, moveY: 1, stance: 'lowStance' },
-            { moveX: 0, moveY: 1, stance: 'lowStance' },
+            { moveX: 0, moveY: 1, stance: 'lowStance', multiMove: 2 },
+            { moveX: 0, moveY: 1, stance: 'lowStance', multiMove: 2 },
+            { moveX: 0, moveY: 1, stance: 'lowStance', multiMove: 2, kihup: true },
+        ]
+    }, {
+        name: 'Taegeuk Sam Jang*',
+        belt: '#00ee00',
+        pattern: [
+            { moveX: -1, moveY: 0, stance: 'highStance' },
+            { moveX: -1, moveY: 0, stance: 'lowStance', multiMove: 3 },
+            { moveX: 1, moveY: 0, stance: 'highStance' },
+            { moveX: 1, moveY: 0, stance: 'lowStance', multiMove: 3 },
+            { moveX: 0, moveY: -1, stance: 'highStance' },
+            { moveX: 0, moveY: -1, stance: 'highStance' },
+            { moveX: -1, moveY: 0, stance: 'sideStance' },
+            { moveX: -0.2, moveY: 0, stance: 'lowStance' },
+            { moveX: 1, moveY: 0, stance: 'sideStance' },
+            { moveX: 0.2, moveY: 0, stance: 'lowStance' },
+            { moveX: 0, moveY: -1, stance: 'highStance' },
+            { moveX: 0, moveY: -1, stance: 'highStance' },
+            { moveX: 1, moveY: 0, stance: 'highStance' },
+            { moveX: 1, moveY: 0, stance: 'lowStance', multiMove: 3 },
+            { moveX: -1, moveY: 0, stance: 'highStance' },
+            { moveX: -1, moveY: 0, stance: 'lowStance', multiMove: 3 },
+            { moveX: 0, moveY: 1, stance: 'highStance', multiMove: 2 },
+            { moveX: 0, moveY: 1, stance: 'highStance', multiMove: 2 },
+            { moveX: 0, moveY: 1, stance: 'highStance', multiMove: 3 },
+            { moveX: 0, moveY: 1, stance: 'highStance', multiMove: 3, kihup: true },
+        ]
+    }, {
+        name: 'Keumgang',
+        belt: '#000000',
+        dan: 2,
+        pattern: [
+            { moveX: 0, moveY: -1, stance: 'lowStance' },
+            { moveX: 0, moveY: -1, stance: 'lowStance' },
+            { moveX: 0, moveY: -1, stance: 'lowStance' },
+            { moveX: 0, moveY: -1, stance: 'lowStance' },
+            { moveX: 0, moveY: 1, stance: 'sideStance', backwards: true },
+            { moveX: 0, moveY: 1, stance: 'sideStance', backwards: true },
+            { moveX: 0, moveY: 1, stance: 'sideStance', backwards: true },
+            { moveX: -0.2, moveY: 0, stance: 'craneStance' },
+            { moveX: -1, moveY: 0, stance: 'horseStance' },
+            { moveX: -1, moveY: 0, stance: 'horseStance' },
+            { moveX: 0, moveY: -1, stance: 'horseStance', kihup: true },
+            { moveX: 0, moveY: -1, stance: 'horseStance' },
+            { moveX: 0, moveY: 1, stance: 'neutralStance' },
+            { moveX: 0, moveY: 1, stance: 'horseStance' },
+            { moveX: 0.2, moveY: 0, stance: 'craneStance' },
+            { moveX: 1, moveY: 0, stance: 'horseStance' },
+            { moveX: 1, moveY: 0, stance: 'horseStance' },
+            { moveX: 0.2, moveY: 0, stance: 'craneStance' },
+            { moveX: 1, moveY: 0, stance: 'horseStance' },
+            { moveX: 1, moveY: 0, stance: 'horseStance' },
+            { moveX: 0, moveY: -1, stance: 'horseStance', kihup: true },
+            { moveX: 0, moveY: -1, stance: 'horseStance' },
+            { moveX: 0, moveY: 1, stance: 'neutralStance' },
+            { moveX: 0, moveY: 1, stance: 'horseStance' },
+            { moveX: -0.2, moveY: 0, stance: 'craneStance' },
+            { moveX: -1, moveY: 0, stance: 'horseStance' },
+            { moveX: -1, moveY: 0, stance: 'horseStance' },
         ]
     },
 ];
@@ -202,7 +279,7 @@ window.onresize = () => {
     draw_form(selectedForm);
 };
 
-// Construct buttons for each form in nav bar
+// Construct nav bar from form data
 formData.forEach(form => {
     let navBtn = document.createElement('div');
     let span = document.createElement('span');
@@ -214,6 +291,13 @@ formData.forEach(form => {
     div.style.borderTop = '4px solid ' + form.belt;
     div.style.borderBottom = '4px solid ' + form.belt;
     div.style.backgroundColor = form.beltStripe || form.belt;
+    if(form.dan) {
+        let str = '';
+        for(let i = 0; i < form.dan; i++) {
+            str += 'l';
+        }
+        div.innerHTML = str;
+    }
 
     navBtn.className = 'nav-button';
     navBtn.onclick = () => {
@@ -258,3 +342,17 @@ document.getElementById('legendBtn').onclick = () => {
     document.getElementById('legendContainer').style.display = showLegend ? 'flex' : 'none';
     draw_form(selectedForm);
 };
+
+// Horizontal scroll
+function horizontalScroll(event) {
+    if(event.shiftKey) {
+        return;
+    }
+
+    let nav = document.getElementById('forms-nav');
+    if(nav.contains(event.target)) {
+        nav.scrollBy({ left: event.detail * 16, behavior: 'smooth' });
+    }
+}
+window.addEventListener('mousewheel', horizontalScroll, false);
+window.addEventListener('DOMMouseScroll', horizontalScroll, false);

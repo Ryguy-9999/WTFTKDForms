@@ -45,7 +45,7 @@ function draw_form(form) {
 
     form.pattern.forEach((movement, index) => {
         let newPoint = { x: currentPoint.x + movement.moveX * stepDistance, y: currentPoint.y + movement.moveY * stepDistance };
-        let colorAlpha = index === currentStep ? 1 : 0.1;
+        let colorAlpha = index === currentStep ? 1 : 0.07;
 
         if(movement.kihup) {
             ctx.fillStyle = `rgba(225,225,0,${colorAlpha})`;
@@ -86,16 +86,20 @@ const stanceData = [
         koreanName: 'Dwi Kubi',
         colorCode: 'sideStance'
     }, {
+        name: 'Cat/Tiger Stance*',
+        koreanName: 'Beom Seogi*',
+        colorCode: 'catStance'
+    }, {
         name: 'Horse/Sitting Stance',
         koreanName: 'Juchum Seogi',
         colorCode: 'horseStance'
     }, {
         name: 'Crane Stance',
-        koreanName: 'Hakdari* Seogi',
+        koreanName: 'Hakdari Seogi',
         colorCode: 'craneStance'
     }, {
-        name: 'Neutral* Stance',
-        koreanName: 'Naranhi* Seogi',
+        name: 'Neutral Stance',
+        koreanName: 'Naranhi Seogi',
         colorCode: 'neutralStance'
     },
 ];
@@ -104,6 +108,7 @@ const stanceColorData = {
     lowStance: 'rgba(255,0,0,$alpha)',
     highStance: 'rgba(0,255,0,$alpha)',
     sideStance: 'rgba(0,0,255,$alpha)',
+    catStance: 'rgba(127,127,127,$alpha)',
     horseStance: 'rgba(255,127,0,$alpha)',
     craneStance: 'rgba(255,0,255,$alpha)',
     neutralStance: 'rgba(127,127,255,$alpha)',
@@ -253,6 +258,31 @@ const formData = [
             { moveX: -1, moveY: 0, stance: 'highStance', multiMove: 2 },
             { moveX: 0, moveY: 1, stance: 'lowStance', multiMove: 3 },
             { moveX: 0, moveY: 1, stance: 'lowStance', multiMove: 3, kihup: true },
+        ]
+    }, {
+        name: 'Taegeuk Oh Jang*',
+        belt: '#4444ff',
+        pattern: [
+            { moveX: -1, moveY: 0, stance: 'lowStance' },
+            { moveX: -0.2, moveY: 0, stance: 'highStance' },
+            { moveX: 1, moveY: 0, stance: 'lowStance' },
+            { moveX: 0.2, moveY: 0, stance: 'highStance' },
+            { moveX: 0, moveY: -1, stance: 'lowStance', multiMove: 2 },
+            { moveX: 0, moveY: -1, stance: 'lowStance', multiMove: 3 },
+            { moveX: 0, moveY: -1, stance: 'lowStance', multiMove: 3 },
+            { moveX: 0, moveY: -1, stance: 'lowStance' },
+            { moveX: 1, moveY: 0, stance: 'sideStance' },
+            { moveX: 1, moveY: 0, stance: 'lowStance' },
+            { moveX: -1, moveY: 0, stance: 'sideStance' },
+            { moveX: -1, moveY: 0, stance: 'lowStance' },
+            { moveX: 0, moveY: 1, stance: 'lowStance', multiMove: 2 },
+            { moveX: 0, moveY: 1, stance: 'lowStance', multiMove: 3 },
+            { moveX: 1, moveY: 0, stance: 'lowStance' },
+            { moveX: 1, moveY: 0, stance: 'lowStance', multiMove: 3 },
+            { moveX: -1, moveY: 0, stance: 'lowStance' },
+            { moveX: -1, moveY: 0, stance: 'lowStance', multiMove: 3 },
+            { moveX: 0, moveY: 1, stance: 'lowStance', multiMove: 2 },
+            { moveX: 0, moveY: 1.5, stance: 'catStance', multiMove: 2, kihup: true },
         ]
     }, {
         name: 'Keumgang',

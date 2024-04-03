@@ -86,9 +86,13 @@ const stanceData = [
         koreanName: 'Dwi Kubi',
         colorCode: 'sideStance'
     }, {
-        name: 'Cat/Tiger Stance*',
-        koreanName: 'Beom Seogi*',
+        name: 'Cat/Tiger Stance',
+        koreanName: 'Beom Seogi',
         colorCode: 'catStance'
+    }, {
+        name: 'Neutral Stance',
+        koreanName: 'Naranhi Seogi',
+        colorCode: 'neutralStance'
     }, {
         name: 'Horse/Sitting Stance',
         koreanName: 'Juchum Seogi',
@@ -97,10 +101,6 @@ const stanceData = [
         name: 'Crane Stance',
         koreanName: 'Hakdari Seogi',
         colorCode: 'craneStance'
-    }, {
-        name: 'Neutral Stance',
-        koreanName: 'Naranhi Seogi',
-        colorCode: 'neutralStance'
     },
 ];
 
@@ -109,9 +109,9 @@ const stanceColorData = {
     highStance: 'rgba(0,255,0,$alpha)',
     sideStance: 'rgba(0,0,255,$alpha)',
     catStance: 'rgba(127,127,127,$alpha)',
+    neutralStance: 'rgba(127,127,255,$alpha)',
     horseStance: 'rgba(255,127,0,$alpha)',
     craneStance: 'rgba(255,0,255,$alpha)',
-    neutralStance: 'rgba(127,127,255,$alpha)',
     default: 'rgba(0,0,0,$alpha)'
 }
 const formData = [
@@ -192,24 +192,24 @@ const formData = [
         belt: '#eeee00',
         beltStripe: '#00ee00',
         pattern: [
-            { moveX: -1, moveY: 0, stance: 'highStance' },
-            { moveX: -1, moveY: 0, stance: 'lowStance' },
-            { moveX: 1, moveY: 0, stance: 'highStance' },
-            { moveX: 1, moveY: 0, stance: 'lowStance' },
-            { moveX: 0, moveY: -1, stance: 'highStance' },
-            { moveX: 0, moveY: -1, stance: 'highStance' },
-            { moveX: -1, moveY: 0, stance: 'highStance' },
-            { moveX: -1, moveY: 0, stance: 'lowStance', multiMove: 2 },
-            { moveX: 1, moveY: 0, stance: 'highStance' },
-            { moveX: 1, moveY: 0, stance: 'lowStance', multiMove: 2 },
-            { moveX: 0, moveY: -1, stance: 'highStance' },
-            { moveX: 0, moveY: -1, stance: 'highStance' },
-            { moveX: 1, moveY: 0, stance: 'highStance' },
-            { moveX: -1, moveY: 0, stance: 'highStance' },
-            { moveX: 0, moveY: 1, stance: 'lowStance' },
-            { moveX: 0, moveY: 1, stance: 'lowStance', multiMove: 2 },
-            { moveX: 0, moveY: 1, stance: 'lowStance', multiMove: 2 },
-            { moveX: 0, moveY: 1, stance: 'lowStance', multiMove: 2, kihup: true },
+            { moveX: -1, moveY: 0, stance: 'highStance' }, // Low block
+            { moveX: -1, moveY: 0, stance: 'lowStance' }, // Middle punch
+            { moveX: 1, moveY: 0, stance: 'highStance' }, // Low block
+            { moveX: 1, moveY: 0, stance: 'lowStance' }, // Middle punch
+            { moveX: 0, moveY: -1, stance: 'highStance' }, // Inner block
+            { moveX: 0, moveY: -1, stance: 'highStance' }, // Inner block
+            { moveX: -1, moveY: 0, stance: 'highStance' }, // Low block
+            { moveX: -1, moveY: 0, stance: 'lowStance', multiMove: 2 }, // Front snap, high punch
+            { moveX: 1, moveY: 0, stance: 'highStance' }, // Low block
+            { moveX: 1, moveY: 0, stance: 'lowStance', multiMove: 2 }, // Front snap, high punch
+            { moveX: 0, moveY: -1, stance: 'highStance' }, // High block
+            { moveX: 0, moveY: -1, stance: 'highStance' }, // High block
+            { moveX: 1, moveY: 0, stance: 'highStance' }, // Inner block
+            { moveX: -1, moveY: 0, stance: 'highStance' }, // Inner block
+            { moveX: 0, moveY: 1, stance: 'highStance' }, // Low block
+            { moveX: 0, moveY: 1, stance: 'highStance', multiMove: 2 }, // Front snap, middle punch
+            { moveX: 0, moveY: 1, stance: 'highStance', multiMove: 2 }, // Front snap, middle punch
+            { moveX: 0, moveY: 1, stance: 'highStance', multiMove: 2, kihup: true }, // Front snap, middle punch
         ]
     }, {
         name: 'Taegeuk Sam Jang*',
@@ -283,6 +283,33 @@ const formData = [
             { moveX: -1, moveY: 0, stance: 'lowStance', multiMove: 3 },
             { moveX: 0, moveY: 1, stance: 'lowStance', multiMove: 2 },
             { moveX: 0, moveY: 1.5, stance: 'catStance', multiMove: 2, kihup: true },
+        ]
+    }, {
+        name: 'Taegeuk Yook Jang*',
+        belt: '#4444ff',
+        beltStripe: '#ee0000',
+        pattern: [
+            { moveX: -1, moveY: 0, stance: 'lowStance' },
+            { moveX: -0.2, moveY: 0, stance: 'sideStance', multiMove: 2 },
+            { moveX: 1, moveY: 0, stance: 'lowStance' },
+            { moveX: 0.2, moveY: 0, stance: 'sideStance', multiMove: 2 },
+            { moveX: 0, moveY: -1, stance: 'lowStance' },
+            { moveX: -0.1, moveY: -0.9 },
+            { moveX: -0.9, moveY: -0.1, stance: 'lowStance', multiMove: 2 },
+            { moveX: -1, moveY: 0, stance: 'lowStance', multiMove: 2 },
+            { moveX: 1, moveY: 0, stance: 'lowStance', multiMove: 2 },
+            { moveX: 1, moveY: 0, stance: 'lowStance', multiMove: 2 },
+            { moveX: -1, moveY: 0, stance: 'neutralStance' },
+            { moveX: 0, moveY: -1, stance: 'lowStance' },
+            { moveX: -0.1, moveY: -0.9, kihup: true },
+            { moveX: -0.9, moveY: -0.1, stance: 'lowStance', multiMove: 2 },
+            { moveX: -0.2, moveY: 0, stance: 'sideStance', multiMove: 2 },
+            { moveX: 1, moveY: 0, stance: 'lowStance' },
+            { moveX: 0.2, moveY: 0, stance: 'sideStance', multiMove: 2 },
+            { moveX: 0, moveY: 1, stance: 'sideStance', backwards: true },
+            { moveX: 0, moveY: 1, stance: 'sideStance', backwards: true },
+            { moveX: 0, moveY: 1, stance: 'lowStance', backwards: true, multiMove: 2 },
+            { moveX: 0, moveY: 1, stance: 'lowStance', backwards: true, multiMove: 2 },
         ]
     }, {
         name: 'Keumgang',
@@ -363,7 +390,7 @@ formData.forEach(form => {
     document.getElementById('forms-nav').appendChild(navBtn);
 });
 
-// Construct legend from color data
+// Construct legend from stance data
 stanceData.forEach(stance => {
     let colorDiv = document.createElement('div');
     let nameSpan = document.createElement('span');

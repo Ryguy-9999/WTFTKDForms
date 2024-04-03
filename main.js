@@ -188,7 +188,7 @@ const formData = [
             { moveX: 0, moveY: 1, stance: 'lowStance', kihup: true },
         ]
     }, {
-        name: 'Taegeuk Ee Jang*',
+        name: 'Taegeuk Ee Jang',
         belt: '#eeee00',
         beltStripe: '#00ee00',
         pattern: [

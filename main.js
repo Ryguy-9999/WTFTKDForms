@@ -70,9 +70,9 @@ function draw_form(form) {
         if(index === currentStep && movement.handTechniques) {
             ctx.fillStyle = 'rgba(255,255,255,1)';
             ctx.beginPath();
-            ctx.fillRect(newPoint.x + 10, newPoint.y + 10, 200, 10 + movement.handTechniques.length*24);
+            ctx.fillRect(newPoint.x + 10, newPoint.y + 10, 230, 10 + movement.handTechniques.length*24);
             ctx.strokeStyle = 'rgba(0,0,0,1)';
-            ctx.strokeRect(newPoint.x + 10, newPoint.y + 10, 200, 10 + movement.handTechniques.length*24);
+            ctx.strokeRect(newPoint.x + 10, newPoint.y + 10, 230, 10 + movement.handTechniques.length*24);
             ctx.fill();
             ctx.fillStyle = 'rgba(0,0,0,1)';
             movement.handTechniques.forEach((technique, index) => {

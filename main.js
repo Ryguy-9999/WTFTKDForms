@@ -36,10 +36,13 @@ function get_form_bounds(form) {
     return bounds;
 }
 
+const TEXTBOX_WIDTH = 280;
+
 function draw_form(form) {
     const bounds = get_form_bounds(form);
     const stepDistance = Math.min(canvas.width / (bounds.maxX - bounds.minX), canvas.height / (bounds.maxY - bounds.minY));
     let currentPoint = { x: canvas.width / (bounds.maxX - bounds.minX) * -bounds.minX, y: canvas.height / (bounds.maxY - bounds.minY) * -bounds.minY };
+    let textPosition = null;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -62,27 +65,39 @@ function draw_form(form) {
         canvas_arrow(ctx, currentPoint.x, currentPoint.y, newPoint.x, newPoint.y);
 
         // Draw multiple arrow heads for multiple movements in one stance
-        for(let i = 0; i < (movement.multiMove || 1); i++) {
-            canvas_arrow(ctx, currentPoint.x, currentPoint.y, currentPoint.x + movement.moveX * stepDistance * Math.pow(0.93, i), currentPoint.y + movement.moveY * stepDistance * Math.pow(0.93, i));
+        for(let i = 1; i < (movement.multiMove || 1); i++) {
+            // Very small arrows on multiMoves tend to merge together, so use a smaller factor
+            let shrinkFactorX = Math.abs(movement.moveX) > 0.3 ? 0.93 : 0.7;
+            let shrinkFactorY = Math.abs(movement.moveY) > 0.3 ? 0.93 : 0.7;
+            
+            canvas_arrow(ctx, currentPoint.x, currentPoint.y,
+                currentPoint.x + movement.moveX * stepDistance * Math.pow(shrinkFactorX, i),
+                currentPoint.y + movement.moveY * stepDistance * Math.pow(shrinkFactorY, i));
         }
 
-        // Draw hand movement text box
+        // textPosition being non-null indicates the movement has handTechniques; remember the position to draw on top later
         if(index === currentStep && movement.handTechniques) {
-            ctx.fillStyle = 'rgba(255,255,255,1)';
-            ctx.beginPath();
-            ctx.fillRect(newPoint.x + 10, newPoint.y + 10, 230, 10 + movement.handTechniques.length*24);
-            ctx.strokeStyle = 'rgba(0,0,0,1)';
-            ctx.strokeRect(newPoint.x + 10, newPoint.y + 10, 230, 10 + movement.handTechniques.length*24);
-            ctx.fill();
-            ctx.fillStyle = 'rgba(0,0,0,1)';
-            movement.handTechniques.forEach((technique, index) => {
-                ctx.font = `${technique.right ? 'italic ' : ''}18px Verdana`;
-                ctx.fillText(technique.move, newPoint.x + 18, newPoint.y + 32 + index*24);
-            });
+            textPosition = { x: newPoint.x, y: newPoint.y };
         }
 
         currentPoint = newPoint;
     });
+
+    // Draw hand movement text box
+    let currentMovement = form.pattern[currentStep];
+    if(textPosition) {
+        ctx.fillStyle = 'rgba(255,255,255,0.8)';
+        ctx.beginPath();
+        ctx.fillRect(textPosition.x + 10, textPosition.y + 10, TEXTBOX_WIDTH, 10 + currentMovement.handTechniques.length*24);
+        ctx.strokeStyle = 'rgba(0,0,0,1)';
+        ctx.strokeRect(textPosition.x + 10, textPosition.y + 10, TEXTBOX_WIDTH, 10 + currentMovement.handTechniques.length*24);
+        ctx.fill();
+        ctx.fillStyle = 'rgba(0,0,0,1)';
+        currentMovement.handTechniques.forEach((technique, index) => {
+            ctx.font = `${technique.right ? 'italic ' : ''}18px Verdana`;
+            ctx.fillText(technique.move, textPosition.x + 18, textPosition.y + 32 + index*24);
+        });
+    }
 }
 
 const canvas = document.getElementById("main-canvas");
@@ -256,52 +271,52 @@ const formData = [
             { moveX: 0, moveY: 1, stance: 'highStance', handTechniques: [{ move: 'Front Snap Kick', right: true }, { move: 'Low Block', right: true }, { move: 'Middle Punch', right: false }], multiMove: 3, kihup: true },
         ]
     }, {
-        name: 'Taegeuk Sa Jang*',
+        name: 'Taegeuk Sa Jang',
         belt: '#00ee00',
         beltStripe: '#4444ff',
         pattern: [
-            { moveX: -1, moveY: 0, stance: 'sideStance' },
-            { moveX: -1, moveY: 0, stance: 'lowStance' },
-            { moveX: 1, moveY: 0, stance: 'sideStance' },
-            { moveX: 1, moveY: 0, stance: 'lowStance' },
-            { moveX: 0, moveY: -1, stance: 'lowStance' },
-            { moveX: 0, moveY: -1, stance: 'lowStance', multiMove: 2 },
-            { moveX: 0, moveY: -2, stance: 'sideStance', multiMove: 3 },
-            { moveX: 1, moveY: 0, stance: 'sideStance' },
-            { moveX: 0.2, moveY: 0, stance: 'sideStance', multiMove: 2 },
-            { moveX: -1, moveY: 0, stance: 'sideStance' },
-            { moveX: -0.2, moveY: 0, stance: 'sideStance', multiMove: 2 },
-            { moveX: 0, moveY: 1, stance: 'lowStance' },
-            { moveX: 0, moveY: 1, stance: 'lowStance', multiMove: 2 },
-            { moveX: 1, moveY: 0, stance: 'highStance', multiMove: 2 },
-            { moveX: -1, moveY: 0, stance: 'highStance', multiMove: 2 },
-            { moveX: 0, moveY: 1, stance: 'lowStance', multiMove: 3 },
-            { moveX: 0, moveY: 1, stance: 'lowStance', multiMove: 3, kihup: true },
+            { moveX: -1, moveY: 0, stance: 'sideStance', handTechniques: [{ move: 'Double Knife Hand Block', right: false }] },
+            { moveX: -1, moveY: 0, stance: 'lowStance', handTechniques: [{ move: 'Spearhand', right: true }] },
+            { moveX: 1, moveY: 0, stance: 'sideStance', handTechniques: [{ move: 'Double Knife Hand Block', right: true }] },
+            { moveX: 1, moveY: 0, stance: 'lowStance', handTechniques: [{ move: 'Spearhand', right: false }] },
+            { moveX: 0, moveY: -1, stance: 'lowStance', handTechniques: [{ move: 'Knife Hand Strike/High Block', right: true }] },
+            { moveX: 0, moveY: -1, stance: 'lowStance', handTechniques: [{ move: 'Front Snap Kick', right: true }, { move: 'Middle Punch', right: false }], multiMove: 2 },
+            { moveX: 0, moveY: -2, stance: 'sideStance', handTechniques: [{ move: 'Side Kick', right: false }, { move: 'Side Kick', right: true }, { move: 'Double Knife Hand Block', right: true }], multiMove: 3 },
+            { moveX: 1, moveY: 0, stance: 'sideStance', handTechniques: [{ move: 'Outer Forearm Block', right: false }] },
+            { moveX: 0.2, moveY: 0, stance: 'sideStance', handTechniques: [{ move: 'Front Snap Kick', right: true }, { move: 'Inner Forearm Block', right: true }], multiMove: 2 },
+            { moveX: -1, moveY: 0, stance: 'sideStance', handTechniques: [{ move: 'Outer Forearm Block', right: true }] },
+            { moveX: -0.2, moveY: 0, stance: 'sideStance', handTechniques: [{ move: 'Front Snap Kick', right: false }, { move: 'Inner Forearm Block', right: false }], multiMove: 2 },
+            { moveX: 0, moveY: 1, stance: 'lowStance', handTechniques: [{ move: 'Knife Hand Strike/High Block', right: true }] },
+            { moveX: 0, moveY: 1, stance: 'lowStance', handTechniques: [{ move: 'Front Snap Kick', right: true }, { move: 'Inner Forearm Block*', right: true }], multiMove: 2 },
+            { moveX: 1, moveY: 0, stance: 'highStance', handTechniques: [{ move: 'Inner Forearm Block', right: false }, { move: 'Middle Punch', right: true }], multiMove: 2 },
+            { moveX: -1, moveY: 0, stance: 'highStance', handTechniques: [{ move: 'Inner Forearm Block', right: true }, { move: 'Middle Punch', right: false }], multiMove: 2 },
+            { moveX: 0, moveY: 1, stance: 'lowStance', handTechniques: [{ move: 'Inner Forearm Block', right: false }, { move: 'Middle Punch', right: true }, { move: 'Middle Punch', right: false }], multiMove: 3 },
+            { moveX: 0, moveY: 1, stance: 'lowStance', handTechniques: [{ move: 'Inner Forearm Block', right: true }, { move: 'Middle Punch', right: false }, { move: 'Middle Punch', right: true }], multiMove: 3, kihup: true },
         ]
     }, {
-        name: 'Taegeuk Oh Jang*',
+        name: 'Taegeuk Oh Jang',
         belt: '#4444ff',
         pattern: [
-            { moveX: -1, moveY: 0, stance: 'lowStance' },
-            { moveX: -0.2, moveY: 0, stance: 'highStance' },
-            { moveX: 1, moveY: 0, stance: 'lowStance' },
-            { moveX: 0.2, moveY: 0, stance: 'highStance' },
-            { moveX: 0, moveY: -1, stance: 'lowStance', multiMove: 2 },
-            { moveX: 0, moveY: -1, stance: 'lowStance', multiMove: 3 },
-            { moveX: 0, moveY: -1, stance: 'lowStance', multiMove: 3 },
-            { moveX: 0, moveY: -1, stance: 'lowStance' },
-            { moveX: 1, moveY: 0, stance: 'sideStance' },
-            { moveX: 1, moveY: 0, stance: 'lowStance' },
-            { moveX: -1, moveY: 0, stance: 'sideStance' },
-            { moveX: -1, moveY: 0, stance: 'lowStance' },
-            { moveX: 0, moveY: 1, stance: 'lowStance', multiMove: 2 },
-            { moveX: 0, moveY: 1, stance: 'lowStance', multiMove: 3 },
-            { moveX: 1, moveY: 0, stance: 'lowStance' },
-            { moveX: 1, moveY: 0, stance: 'lowStance', multiMove: 3 },
-            { moveX: -1, moveY: 0, stance: 'lowStance' },
-            { moveX: -1, moveY: 0, stance: 'lowStance', multiMove: 3 },
-            { moveX: 0, moveY: 1, stance: 'lowStance', multiMove: 2 },
-            { moveX: 0, moveY: 1.5, stance: 'catStance', multiMove: 2, kihup: true },
+            { moveX: -1, moveY: 0, stance: 'lowStance', handTechniques: [{ move: 'Low Block', right: false }] },
+            { moveX: 1, moveY: 0, backwards: true, stance: 'highStance', handTechniques: [{ move: 'Hammer Fist', right: false }] },
+            { moveX: 1, moveY: 0, stance: 'lowStance', handTechniques: [{ move: 'Low Block', right: true }] },
+            { moveX: -1, moveY: 0, backwards: true, stance: 'highStance', handTechniques: [{ move: 'Hammer Fist', right: true }] },
+            { moveX: 0, moveY: -1, stance: 'lowStance', handTechniques: [{ move: 'Inner Forearm Block', right: false }, { move: 'Inner Forearm Block', right: true }], multiMove: 2 },
+            { moveX: 0, moveY: -1, stance: 'lowStance', handTechniques: [{ move: 'Front Snap Kick', right: true }, { move: 'Backfist', right: true }, { move: 'Inner Forearm Block', right: false }], multiMove: 3 },
+            { moveX: 0, moveY: -1, stance: 'lowStance', handTechniques: [{ move: 'Front Snap Kick', right: false }, { move: 'Backfist', right: false }, { move: 'Inner Forearm Block', right: true }], multiMove: 3 },
+            { moveX: 0, moveY: -1, stance: 'lowStance', handTechniques: [{ move: 'Backfist', right: true }] },
+            { moveX: 1, moveY: 0, stance: 'sideStance', handTechniques: [{ move: 'Outer Knife Hand Block', right: false }] },
+            { moveX: 1, moveY: 0, stance: 'lowStance', handTechniques: [{ move: 'Elbow (Catch Fist)', right: true }] },
+            { moveX: -1, moveY: 0, stance: 'sideStance', handTechniques: [{ move: 'Outer Knife Hand Block', right: true }] },
+            { moveX: -1, moveY: 0, stance: 'lowStance', handTechniques: [{ move: 'Elbow (Catch Fist)', right: false }] },
+            { moveX: 0, moveY: 1, stance: 'lowStance', handTechniques: [{ move: 'Low Block', right: false }, { move: 'Inner Forearm Block', right: true }], multiMove: 2 },
+            { moveX: 0, moveY: 1, stance: 'lowStance', handTechniques: [{ move: 'Front Snap Kick', right: true }, { move: 'Low Block', right: true }, { move: 'Inner Forearm Block', right: false }], multiMove: 3 },
+            { moveX: 1, moveY: 0, stance: 'lowStance', handTechniques: [{ move: 'High Block', right: false }] },
+            { moveX: 1, moveY: 0, stance: 'lowStance', handTechniques: [{ move: 'Side Kick + Backfist', right: true }, { move: 'Elbow (Catch Elbow)', right: false }], multiMove: 2 },
+            { moveX: -1, moveY: 0, stance: 'lowStance', handTechniques: [{ move: 'High Block', right: true }] },
+            { moveX: -1, moveY: 0, stance: 'lowStance', handTechniques: [{ move: 'Side Kick + Backfist', right: false }, { move: 'Elbow (Catch Elbow)', right: true }], multiMove: 2 },
+            { moveX: 0, moveY: 1, stance: 'lowStance', handTechniques: [{ move: 'Low Block', right: false }, { move: 'Inner Forearm Block', right: true }], multiMove: 2 },
+            { moveX: 0, moveY: 1.5, stance: 'catStance', handTechniques: [{ move: 'Front Snap Kick', right: true }, { move: 'Backfist', right: true }], multiMove: 2, kihup: true },
         ]
     }, {
         name: 'Taegeuk Yook Jang*',
@@ -335,33 +350,33 @@ const formData = [
         belt: '#000000',
         dan: 2,
         pattern: [
-            { moveX: 0, moveY: -1, stance: 'lowStance' },
-            { moveX: 0, moveY: -1, stance: 'lowStance' },
-            { moveX: 0, moveY: -1, stance: 'lowStance' },
-            { moveX: 0, moveY: -1, stance: 'lowStance' },
-            { moveX: 0, moveY: 1, stance: 'sideStance', backwards: true },
-            { moveX: 0, moveY: 1, stance: 'sideStance', backwards: true },
-            { moveX: 0, moveY: 1, stance: 'sideStance', backwards: true },
-            { moveX: -0.2, moveY: 0, stance: 'craneStance' },
-            { moveX: -1, moveY: 0, stance: 'horseStance' },
-            { moveX: -1, moveY: 0, stance: 'horseStance' },
-            { moveX: 0, moveY: -1, stance: 'horseStance', kihup: true },
-            { moveX: 0, moveY: -1, stance: 'horseStance' },
-            { moveX: 0, moveY: 1, stance: 'neutralStance' },
-            { moveX: 0, moveY: 1, stance: 'horseStance' },
-            { moveX: 0.2, moveY: 0, stance: 'craneStance' },
-            { moveX: 1, moveY: 0, stance: 'horseStance' },
-            { moveX: 1, moveY: 0, stance: 'horseStance' },
-            { moveX: 0.2, moveY: 0, stance: 'craneStance' },
-            { moveX: 1, moveY: 0, stance: 'horseStance' },
-            { moveX: 1, moveY: 0, stance: 'horseStance' },
-            { moveX: 0, moveY: -1, stance: 'horseStance', kihup: true },
-            { moveX: 0, moveY: -1, stance: 'horseStance' },
-            { moveX: 0, moveY: 1, stance: 'neutralStance' },
-            { moveX: 0, moveY: 1, stance: 'horseStance' },
-            { moveX: -0.2, moveY: 0, stance: 'craneStance' },
-            { moveX: -1, moveY: 0, stance: 'horseStance' },
-            { moveX: -1, moveY: 0, stance: 'horseStance' },
+            { moveX: 0, moveY: -1, stance: 'lowStance', handTechniques: [{ move: 'Twin Inner Forearm Block', right: false }] },
+            { moveX: 0, moveY: -1, stance: 'lowStance', handTechniques: [{ move: 'Palm Strike', right: true }] },
+            { moveX: 0, moveY: -1, stance: 'lowStance', handTechniques: [{ move: 'Palm Strike', right: false }] },
+            { moveX: 0, moveY: -1, stance: 'lowStance', handTechniques: [{ move: 'Palm Strike', right: true }] },
+            { moveX: 0, moveY: 1, stance: 'sideStance', handTechniques: [{ move: 'Inner Knife Hand Block', right: false }], backwards: true },
+            { moveX: 0, moveY: 1, stance: 'sideStance', handTechniques: [{ move: 'Inner Knife Hand Block', right: true }], backwards: true },
+            { moveX: 0, moveY: 1, stance: 'sideStance', handTechniques: [{ move: 'Inner Knife Hand Block', right: false }], backwards: true },
+            { moveX: -0.2, moveY: 0, stance: 'craneStance', handTechniques: [{ move: 'Low Block + High Block', right: false }] }, // TODO symbolism for slow counts, and number of seconds
+            { moveX: -1, moveY: 0, stance: 'horseStance', handTechniques: [{ move: 'Sideways Punch*', right: true }] },
+            { moveX: -1, moveY: 0, stance: 'horseStance', handTechniques: [{ move: 'Sideways Punch*', right: true }] },
+            { moveX: 0, moveY: -1, stance: 'horseStance', handTechniques: [{ move: 'Mountain Block', right: true }], kihup: true },
+            { moveX: 0, moveY: -1, stance: 'horseStance', handTechniques: [{ move: 'Twin Inner Forearm Block', right: false }] },
+            { moveX: 0, moveY: 1, stance: 'neutralStance', handTechniques: [{ move: 'Twin Low Block*', right: true }] },
+            { moveX: 0, moveY: 1, stance: 'horseStance', handTechniques: [{ move: 'Mountain Block', right: false }] },
+            { moveX: 0.2, moveY: 0, stance: 'craneStance', handTechniques: [{ move: 'Low Block + High Block', right: true }] },
+            { moveX: 1, moveY: 0, stance: 'horseStance', handTechniques: [{ move: 'Sideways Punch*', right: false }] },
+            { moveX: 1, moveY: 0, stance: 'horseStance', handTechniques: [{ move: 'Sideways Punch*', right: false }] },
+            { moveX: 0.2, moveY: 0, stance: 'craneStance', handTechniques: [{ move: 'Low Block + High Block', right: true }] },
+            { moveX: 1, moveY: 0, stance: 'horseStance', handTechniques: [{ move: 'Sideways Punch*', right: false }] },
+            { moveX: 1, moveY: 0, stance: 'horseStance', handTechniques: [{ move: 'Sideways Punch*', right: false }] },
+            { moveX: 0, moveY: -1, stance: 'horseStance', handTechniques: [{ move: 'Mountain Block', right: false }], kihup: true },
+            { moveX: 0, moveY: -1, stance: 'horseStance', handTechniques: [{ move: 'Twin Inner Forearm Block', right: false }] },
+            { moveX: 0, moveY: 1, stance: 'neutralStance', handTechniques: [{ move: 'Twin Low Block*', right: false }] },
+            { moveX: 0, moveY: 1, stance: 'horseStance', handTechniques: [{ move: 'Mountain Block', right: true }] },
+            { moveX: -0.2, moveY: 0, stance: 'craneStance', handTechniques: [{ move: 'Low Block + High Block', right: false }] },
+            { moveX: -1, moveY: 0, stance: 'horseStance', handTechniques: [{ move: 'Sideways Punch*', right: true }] },
+            { moveX: -1, moveY: 0, stance: 'horseStance', handTechniques: [{ move: 'Sideways Punch*', right: true }] },
         ]
     },
 ];
@@ -371,18 +386,36 @@ const validHandTechniques = [
     'High Block',
     'Inner Block',
     'Outer Block',
+    'Outer Knife Hand Block',
+    'Inner Knife Hand Block',
+    'Double Knife Hand Block',
+    'Inner Forearm Block',
+    'Outer Forearm Block',
+    'Mountain Block', // Keumgang
+    'Twin Inner Forearm Block', // Keumgang
     'Middle Punch',
     'High Punch',
-    'Front Snap Kick',
     'Knife Hand Strike',
-    'Outer Knife Hand Block',
-    'Inner Forearm Block'
+    'Spearhand',
+    'Backfist',
+    'Hammer Fist',
+    'Palm Strike', // Keumgang, may be pushed down
+    'Front Snap Kick',
+    'Side Kick',
+    'Knife Hand Strike/High Block',
+
+    'Elbow (Catch Fist)',
+    'Elbow (Catch Elbow)',
+    'Side Kick + Backfist',
+
+    'Low Block + High Block',
+    'Sideways Punch*' // Need to correct*, validated to reduce spam
 ];
 
 // Check that all hand movements exist in the list above, to avoid typos
-formData.forEach(form => form.pattern.forEach(movement => {
+formData.forEach(form => form.pattern.forEach((movement, index) => {
     if(movement.handTechniques) {
-        movement.handTechniques.forEach((move, index) => {
+        movement.handTechniques.forEach((move) => {
             if(!validHandTechniques.includes(move.move)) {
                 console.warn(`Unknown hand technique in form ${form.name}, stance index ${index}: ${JSON.stringify(move)}.`);
             }
